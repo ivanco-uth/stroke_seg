@@ -588,6 +588,8 @@ def conduct_training(batch_size, lr_rate, loss_func, data_folder, label_folder, 
             end = time.time()
 
             print("Time elapsed: {:.2f}".format((end-start)/60))
+
+            print("Here")
                 
 
 
