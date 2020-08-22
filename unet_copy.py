@@ -26,7 +26,7 @@ from net_architecture import i_model
 
 # tf.keras.backend.set_floatx('float16')
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "15"
+os.environ["CUDA_VISIBLE_DEVICES"] = "14"
 gpus = tf.config.experimental.list_physical_devices('GPU')
 print(gpus)
 tf.config.experimental.set_memory_growth(gpus[0] , True)
@@ -377,11 +377,18 @@ def conduct_training(batch_size, lr_rate, loss_func, data_folder, label_folder, 
     target_resolution = (128, 128, 128, 1)
 
 
-    model = model_def(input_image_size=target_resolution)
+    # model = model_def(input_image_size=target_resolution)
+
+
+    model = i_model()
+
+    # sys.exit()
 
 
 
-    model_path = "model_baseline_ich.hdf5"
+
+
+    model_path = "model_res.hdf5"
 
 
     # model.load_weights("model_baseline_ich_n.hdf5")
@@ -563,15 +570,19 @@ def conduct_training(batch_size, lr_rate, loss_func, data_folder, label_folder, 
 
                     # print("Unique Val Predict: {0}".format(np.unique(result)))
 
+                    result = np.nan_to_num(result)
+
                     result[result >= 0.5] = 1
                     result[result < 0.5] = 0
+
+                    
             
                     label_ground_truth = y_batch.numpy()
                     label_predicted = result
 
 
-                    # print("Ground Truth Unique: {0}".format(np.unique(label_ground_truth, return_counts=True)))
-                    # print("Predicted Unique: {0}".format(np.unique(label_predicted, return_counts=True)))
+                    print("Ground Truth Unique: {0}".format(np.unique(label_ground_truth, return_counts=True)))
+                    print("Predicted Unique: {0}".format(np.unique(label_predicted, return_counts=True)))
 
 
                     con_max = confusion_matrix(y_true=label_ground_truth.flatten() 
@@ -758,7 +769,7 @@ def main():
     # specify variables for training    
     epochs = 2000
     op_mode = 'train'
-    lr_rate, batch_size = 1e-5, 16
+    lr_rate, batch_size = 1e-5, 4
     data_folder, label_folder = "../../brains", "../../lesions"
     loss_func = tf.losses.BinaryCrossentropy(from_logits=True)
     
